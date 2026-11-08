@@ -1,0 +1,83 @@
+  :root {
+    --navy: #0f2447;
+    --gold: #c19a5b;
+    --beige: #f8ede0;
+    --grey: #e9eaf0;
+    --bg: #e4e7ee;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1b1e26; }
+  }
+  :root[data-theme="dark"] { --bg: #1b1e26; }
+  html { height: 100vh; height: 100dvh; margin: 0; overflow: hidden; }
+  body { margin: 0; height: 100%; overflow: auto; display: flex; direction: ltr;
+    background: var(--bg); font-family: "Vazirmatn", Tahoma, sans-serif; }
+
+  /* Wrapper keeps the page centered while it is scaled */
+  #wrap { flex: none; position: relative; direction: ltr; margin: auto; }
+  #page {
+    position: absolute; left: 0; top: 0; direction: rtl; width: 1500px; height: 1714px; overflow: hidden;
+    background: linear-gradient(#ffffff, #f6f7fa);
+    transform-origin: top left; color: var(--navy);
+  }
+  #page > *, #page form > * { position: absolute; }
+  svg.full { left: 0; top: 0; width: 1500px; height: 1714px; }
+
+  /* Top-left fields */
+  .field { left: 55px; width: 272px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 25px; }
+  .field span { min-width: 80px; outline: none; }
+
+  /* Title */
+  #title { left: 544px; top: 343px; width: 412px; height: 118px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 66px; font-weight: 800; }
+
+  /* Table */
+  #tbl { left: 27px; top: 489px; width: 1446px; height: 640px; border: 2px solid var(--navy); border-radius: 18px; overflow: hidden; background: #fff; }
+  table { width: 100%; height: 100%; border-collapse: collapse; table-layout: fixed; }
+  th { background: var(--navy); color: #fff; height: 88px; font-size: 27px; font-weight: 600; border-left: 1px solid #5d6b8a; }
+  th:last-child { border-left: 0; }
+  td { border-left: 1px solid #b9bdd0; text-align: center; font-size: 24px; font-weight: 600; outline: none; }
+  td:last-child { border-left: 0; }
+  td.n { font-weight: 800; font-size: 28px; }
+  tr:nth-child(odd) td { background: #fff; }
+  tr:nth-child(even) td { background: var(--grey); }
+
+  /* Total */
+  #total { left: 27px; top: 1172px; width: 1446px; height: 86px; border: 2px solid var(--gold); border-radius: 14px; overflow: hidden; display: flex; background: var(--beige); }
+  #total .label { width: 380px; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 800; }
+  #total .value { flex: 1; display: flex; align-items: center; padding: 0 24px; font-size: 30px; font-weight: 800; outline: none; }
+
+  /* Bottom */
+  #sign-text { left: 60px; width: 310px; top: 1470px; text-align: center; font-weight: 800; font-size: 24px; }
+  #thanks { left: 1176px; width: 280px; top: 1378px; text-align: center; font-weight: 800; font-size: 30px; }
+
+  td input { width: 100%; height: 44px; padding: 0; border: 0; background: transparent; text-align: center;
+    font: inherit; color: inherit; outline: none; box-sizing: border-box; }
+  td input:focus { background: #fbf3e4; }
+
+  /* hide the up/down arrows of number inputs */
+  input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* download button: outside the invoice, top-left corner */
+  #save-btn { position: fixed; left: 16px; top: calc(16px + env(safe-area-inset-top, 0px)); z-index: 10;
+    padding: 12px 22px; border: 2px solid var(--gold); border-radius: 12px; background: var(--navy); color: #fff;
+    font: 800 20px "Vazirmatn", Tahoma, sans-serif; cursor: pointer; }
+  #save-btn:disabled { opacity: .6; cursor: wait; }
+  #msg { position: fixed; left: 16px; top: calc(78px + env(safe-area-inset-top, 0px)); z-index: 10;
+    max-width: 220px; direction: rtl; color: #b3261e; font: 600 16px "Vazirmatn", Tahoma, sans-serif; }
+
+  /* zoom buttons: outside the invoice, bottom-left corner */
+  #zoom { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10; display: flex; gap: 8px; }
+  #zoom button { width: 48px; height: 48px; border: 2px solid var(--gold); border-radius: 12px; background: var(--navy);
+    color: #fff; font: 800 26px "Vazirmatn", Tahoma, sans-serif; cursor: pointer; }
+
+  @media print {
+    #save-btn, #msg, #zoom { display: none; }
+    body { background: #fff; }
+    #wrap { margin: 0; }
+  }

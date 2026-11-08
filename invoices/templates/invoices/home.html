@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فاکتور فروشگاه پارسیان</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'invoices/css/style.css' %}">
+</head>
+<body>
+<button id="save-btn" type="button">دانلود فاکتور</button>
+<div id="msg"></div>
+<div id="zoom"><button id="zoom-in" type="button">+</button><button id="zoom-out" type="button">−</button></div>
+<div id="wrap">
+<div id="page">
+{% csrf_token %}
+
+  <!-- Decorative header, title badge, signature and footer -->
+  <svg class="full" viewBox="0 0 1500 1714" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#e6c88a"/><stop offset=".5" stop-color="#b98d4e"/><stop offset="1" stop-color="#e9cf97"/>
+      </linearGradient>
+    </defs>
+
+    <g transform="scale(1.4648,1)">
+    <path d="M380,0 L1024,0 L1024,300 C900,330 760,305 640,205 C540,120 450,50 380,0 Z" fill="#0f2447"/>
+    <path d="M250,0 C360,45 470,135 600,235 C740,335 900,345 1024,312" fill="none" stroke="url(#gold)" stroke-width="9"/>
+    <path d="M300,0 C400,50 500,140 620,230 C760,325 900,325 1024,296" fill="none" stroke="url(#gold)" stroke-width="2"/>
+    <path d="M0,70 C120,20 200,10 260,0" fill="none" stroke="#e3e6ee" stroke-width="1"/></g>
+
+    <g transform="translate(476,0)">
+    <polygon points="857,32 932,75 932,155 857,198 782,155 782,75" fill="none" stroke="url(#gold)" stroke-width="5"/>
+    <g fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M825,88 H842 L858,140 H896 L908,100 H850"/>
+      <path d="M806,92 H822 M810,106 H830 M814,120 H834" stroke-width="5"/>
+    </g>
+    <circle cx="858" cy="150" r="7" fill="url(#gold)"/><circle cx="888" cy="150" r="7" fill="url(#gold)"/>
+    <text x="868" y="232" text-anchor="middle" font-family="Vazirmatn, Tahoma, sans-serif" font-weight="800" font-size="31" fill="#d9b270">فروشگاه پارسیان</text>
+    <text x="868" y="266" text-anchor="middle" font-family="Vazirmatn, Tahoma, sans-serif" font-size="17" fill="#d9b270">انتخابی مطمئن، خریدی آسان</text></g>
+
+    <!-- Title lines and badge -->
+    <line x1="35" y1="404" x2="530" y2="404" stroke="url(#gold)" stroke-width="2"/>
+    <line x1="971" y1="404" x2="1464" y2="404" stroke="url(#gold)" stroke-width="2"/>
+    <g transform="translate(238,0)"><path d="M350,343 L674,343 Q690,360 705,375 L718,403 L705,431 Q690,446 674,461 L350,461 Q334,446 319,431 L306,403 L319,375 Q334,360 350,343 Z" fill="#0f2447" stroke="url(#gold)" stroke-width="4"/>
+    <path d="M352,351 L672,351 Q686,365 698,378 L708,403 L698,428 Q686,441 672,453 L352,453 Q338,441 326,428 L316,403 L326,378 Q338,365 352,351 Z" fill="none" stroke="url(#gold)" stroke-width="1.5"/></g>
+
+    <g transform="translate(0,178)">
+    <path d="M90,1255 C70,1215 140,1170 215,1175 C260,1178 290,1150 312,1140 C300,1170 250,1215 210,1260 C250,1215 280,1180 300,1160 C320,1185 340,1198 380,1192 M215,1175 C190,1215 130,1285 90,1262"
+          fill="none" stroke="#0f2a6b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="60" y1="1282" x2="370" y2="1282" stroke="#333" stroke-width="1.5"/></g>
+
+    <g transform="translate(476,178)">
+    <line x1="706" y1="1272" x2="820" y2="1272" stroke="#0f2447" stroke-width="2"/>
+    <line x1="858" y1="1272" x2="966" y2="1272" stroke="#0f2447" stroke-width="2"/>
+    <polygon points="839,1263 849,1272 839,1281 829,1272" fill="#0f2447"/></g>
+
+    <g transform="translate(0,178) scale(1.4648,1)">
+    <path d="M0,1385 C150,1385 300,1450 480,1490 C650,1525 850,1480 1024,1345 L1024,1536 L0,1536 Z" fill="#0f2447"/>
+    <path d="M0,1372 C150,1370 320,1440 500,1480 C680,1520 880,1470 1024,1335" fill="none" stroke="url(#gold)" stroke-width="7"/>
+    <path d="M0,1440 C180,1430 330,1500 520,1520 C700,1536 860,1500 1024,1410" fill="none" stroke="url(#gold)" stroke-width="2"/></g>
+  </svg>
+
+  <!-- Fields (click and type) -->
+  <div class="field" style="top:145px"><span id="f-number"></span><b style="order:-1;font-weight:600">شماره فاکتور:</b></div>
+  <div class="field" style="top:196px"><span id="f-date"></span><b style="order:-1;font-weight:600">تاریخ صدور:</b></div>
+
+  <div id="title">فاکتور</div>
+
+  <!-- Items table -->
+  <div id="tbl">
+    <table>
+      <colgroup>
+        <col style="width:140px"><col style="width:430px"><col style="width:180px">
+        <col style="width:230px"><col style="width:230px"><col style="width:236px">
+      </colgroup>
+      <tr><th>ردیف</th><th>نام</th><th>تعداد</th><th>قیمت</th><th>تخفیف</th><th>قیمت کل</th></tr>
+      <tr style="height:46px"><td class="n">۱</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۲</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۳</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۴</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۵</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۶</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۷</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۸</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۹</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۱۰</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۱۱</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+      <tr style="height:46px"><td class="n">۱۲</td><td><input name="title" maxlength="256" autocomplete="off"></td><td><input name="quantity" type="number" min="1"></td><td><input name="price" type="number" min="0"></td><td><input name="discount" type="number" min="0" max="100"></td><td></td></tr>
+    </table>
+  </div>
+
+  <!-- Grand total -->
+  <div id="total">
+    <div class="label">جمع کل فاکتور:</div>
+    <div class="value"></div>
+  </div>
+
+  <div id="sign-text">امضا فروشنده</div>
+  <div id="thanks">با تشکر از خرید شما</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  // Shrink the page on small screens so it always fits the width
+  var wrap = document.getElementById("wrap");
+  var zoom = 1; // 1 = fits the screen, bigger = zoomed in
+  var page = document.getElementById("page");
+  function fit() {
+    // Fit both width and height, so the page never needs scrolling
+    var w = document.body.clientWidth - 16;
+    var h = document.body.clientHeight - 16;
+    var s = Math.min(w / 1500, h / 1714) * zoom;
+    var sx = s; // same scale in both directions, so nothing looks stretched
+    page.style.transform = "scale(" + sx + "," + s + ")";
+    wrap.style.width = 1500 * sx + "px";
+    wrap.style.height = 1714 * s + "px";
+  }
+  window.addEventListener("resize", fit);
+  fit();
+
+  document.getElementById("zoom-in").addEventListener("click", function () {
+    zoom = Math.min(zoom * 1.25, 3);
+    fit();
+  });
+  document.getElementById("zoom-out").addEventListener("click", function () {
+    zoom = Math.max(zoom / 1.25, 1); // never smaller than "fits the screen"
+    fit();
+  });
+
+  // Fill "قیمت کل" of every row and the grand total while the user types
+  function calculate() {
+    var grandTotal = 0;
+    var rows = document.querySelectorAll("#tbl tr");
+
+    rows.forEach(function (row) {
+      var price = row.querySelector('[name="price"]');
+      if (!price) return; // header row and the last empty row have no inputs
+
+      var quantity = Number(row.querySelector('[name="quantity"]').value);
+      var discount = Number(row.querySelector('[name="discount"]').value);
+
+      var amount = quantity * Number(price.value);
+      amount = Math.floor(amount * (1 - discount / 100));
+
+      row.cells[5].textContent = amount ? amount.toLocaleString("fa-IR") : "";
+      grandTotal += amount;
+    });
+
+    var totalBox = document.querySelector("#total .value");
+    totalBox.textContent = grandTotal ? grandTotal.toLocaleString("fa-IR") : "";
+  }
+  document.getElementById("tbl").addEventListener("input", calculate);
+  // ---------- Download button: save in Django, then download a PDF ----------
+  var btn = document.getElementById("save-btn");
+  var msg = document.getElementById("msg");
+
+  function downloadPdf(invoiceId) {
+    return html2canvas(page, {
+      scale: 2,
+      windowWidth: 1500,
+      windowHeight: 1714,
+      onclone: function (clonedDoc) {
+        // in the copy, show the page at its real size (no shrinking)
+        clonedDoc.getElementById("page").style.transform = "none";
+        clonedDoc.getElementById("wrap").style.width = "1500px";
+        clonedDoc.getElementById("wrap").style.height = "1714px";
+      }
+    }).then(function (canvas) {
+      var pdf = new window.jspdf.jsPDF({ unit: "px", format: [1500, 1714] });
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 1500, 1714);
+      pdf.save("invoice-" + invoiceId + ".pdf");
+    });
+  }
+
+  btn.addEventListener("click", function () {
+    btn.disabled = true;
+    msg.textContent = "در حال ذخیره...";
+
+    // 1) collect the values of the table
+    var data = new FormData();
+    data.append("csrfmiddlewaretoken", document.querySelector("[name=csrfmiddlewaretoken]").value);
+    document.querySelectorAll("#tbl input").forEach(function (input) {
+      data.append(input.name, input.value);
+    });
+
+    // 2) send them to the Django view
+    fetch(window.location.href, { method: "POST", body: data })
+      .then(function (response) { return response.json(); })
+      .then(function (result) {
+        if (!result.ok) { throw new Error(result.error); }
+        // 3) saved: show the number and the date on the invoice
+        document.getElementById("f-number").textContent =
+          result.invoice_id.toLocaleString("fa-IR", { useGrouping: false });
+        document.getElementById("f-date").textContent =
+          new Date(result.created + "T12:00:00").toLocaleDateString("fa-IR");
+
+        // 4) now download the PDF
+        return downloadPdf(result.invoice_id);
+      })
+      .then(function () {
+        msg.textContent = "فاکتور ذخیره و دانلود شد.";
+        setTimeout(function () { location.reload(); }, 1500);
+      })
+      .catch(function (error) {
+        msg.textContent = error.message;
+        btn.disabled = false;
+      });
+  });
+</script>
+</body>
+</html>

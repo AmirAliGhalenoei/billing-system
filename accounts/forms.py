@@ -1,9 +1,11 @@
 from django import forms
-from .models import User
 from django.contrib.auth.forms import (
     UserCreationForm as BaseUserCreationForm,
     UserChangeForm as BaseUserChangeForm
 )
+
+from .models import User
+
 
 
 class UserCreationForm(BaseUserCreationForm):
