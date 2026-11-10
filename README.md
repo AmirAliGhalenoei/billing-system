@@ -29,23 +29,6 @@ The user fills in the items, clicks one button, and the invoice is **saved in th
 - **PDF:** [html2canvas](https://html2canvas.hertzen.com/) and [jsPDF](https://github.com/parallax/jsPDF), loaded from cdnjs
 - **Font:** Vazirmatn (Google Fonts)
 
-## How it works
-
-```
-Browser                               Django
--------                               ------
-user fills the table
-clicks "دانلود فاکتور"  --POST-->     CreateInvoiceView.post()
-                                      - reads the rows
-                                      - validates every row with a form
-                                      - creates Invoice + InvoiceItem objects
-                        <--JSON--     {"ok": true, "invoice_id": 1, "created": "2026-11-08"}
-shows number and date
-makes the PDF and downloads it
-```
-
-If something is wrong, Django answers `{"ok": false, "error": "..."}` and the page shows the message instead of downloading.
-
 ## Data models
 
 | Model | Fields |
